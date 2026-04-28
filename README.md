@@ -27,6 +27,6 @@ makeblastdb -in organism_proteome.fasta -title organism_db -dbtype prot -out org
 ## 3. Run organism-specific BLAST
 The evalue is set to 1e-5, and `-num_threads` can be adjusted based on the system's configuration. **One does not need to provide the sequences individually.**
 ```
-blastp -query all_translations.txt -db organism_db/organism_db -out output_dir/output_file.txt -evalue 1e-5 -num_threads 4
+blastp -query all_translations.txt -db organism_db/organism_db -out output_dir/blast_output.tsv -evalue 1e-5 -num_threads 4
 ```
 ## 4. Extract only sequences that don't give any match in step 3.
