@@ -1,10 +1,10 @@
-# SLIME (Similarity-based Latent gene Identification MEthod)
+# Genomes' Got Latent
 Pipeline to analyse any genome and predict latent sequences
 ## Download and setup the repository
 ```
-git clone https://github.com/Shourya-19/slime.git
+git clone https://github.com/Shourya-19/genomes_got_latent.git
 conda env create -f environment.yml
-conda activate slime
+conda activate genomes_got_latent
 ```
 ## 1. Translating the genome in all six reading frames
 Translate the genome in all reading frames. The default length cutoff is 60 if not specified.
@@ -38,7 +38,7 @@ blastp -query no_hit_org_blast.fasta -db UniRef90_db/UniRef90_db  -out uniref_bl
 ```
 
 ## 6. Analyse and shortlist putative latent proteins
-The user has to give a) the blast out file from step 5, b) translation file from step 1, c) output file name and d) their organisms Genus.
+The user has to give a) the blast out file from step 5, b) the translation file from step 1, c) the output file name and d) their organisms' genus.
 ```
 python analyse_uniref_hits.py uniref_blast.tsv all_translations.txt uniref_proteome_file.fasta latent_proteins.txt [exclude_genus,separate by comma]
 ```
