@@ -2,7 +2,7 @@
 Pipeline to analyse any genome and predict latent sequences
 ## Download and setup the repository
 ```
-git clone your_repo
+git clone https://github.com/Shourya-19/slime.git
 conda env create -f environment.yml
 conda activate slime
 ```
