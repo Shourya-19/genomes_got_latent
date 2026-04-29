@@ -1,3 +1,15 @@
+# Written by Shourya Burnwal shouryaburnwal19@gmail.com
+
+'''
+Copyright (C) 2026 Shourya Burnwal <shouryaburnwal19@gmail.com>
+
+You can use the contents of this file under the conditions of Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International deed (https://creativecommons.org/licenses/by-nc-sa/4.0/). 
+A copy of this deed in provided in the LICENSE.md file.
+
+You are free to copy, distribute, remix, transform and build upon this program as long as 1) it is for non commercial purpose, 2) Attributions are provided 3) Shared under the same license. 
+
+'''
+
 """
 DNA to Amino Acid Sequence Translator
 Translates all 6 reading frames for one or more FASTA sequences.
