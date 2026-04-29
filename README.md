@@ -35,6 +35,10 @@ python filter_nohit.py all_translations.txt organism_blast_output.tsv no_hit_org
 ## 5. Run UniRef90 BLAST on no_hits file obtained in step 4.
 ```
 blastp -query no_hit_org_blast.fasta -db UniRef90_db/UniRef90_db  -out uniref_blast.tsv -evalue 1e-5 -num_threads 4 -outfmt "6 qseqid sseqid pident length qstart qend sstart send evalue bitscore"
+```
 
-
-
+## 6. Analyse and shortlist putative latent proteins
+The user has to give a) the blast out file from step 5, b) translation file from step 1, c) output file name and d) their organisms Genus.
+```
+python analyse_uniref_hits.py uniref_blast.tsv all_translations.txt latent_proteins.txt genus
+```
