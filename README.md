@@ -26,7 +26,7 @@ makeblastdb -in UniRef90.fasta -title UniRef90 -dbtype prot -out UniRef90_db/Uni
 ## 3. Run organism-specific BLAST
 The evalue is set to 1e-5, and `-num_threads` can be adjusted based on the system's configuration. **One does not need to provide the sequences individually.**
 ```
-blastp -query all_translations.txt -db organism_db/organism_db -out organism_blast_output.tsv -evalue 1e-5 -num_threads 4
+blastp -query all_translations.txt -db organism_db/organism_db -out organism_blast_output.tsv -evalue 1e-5 -num_threads 4 -outfmt "6 qseqid sseqid pident length qstart qend sstart send evalue bitscore"
 ```
 ## 4. Extract only sequences that give no hits in step 3.
 ```
@@ -34,7 +34,7 @@ python filter_nohit.py all_translations.txt organism_blast_output.tsv no_hit_org
 ```
 ## 5. Run UniRef90 BLAST on no_hits file obtained in step 4.
 ```
-blastp -query no_hit_org_blast.fasta -db UniRef90_db/UniRef90_db  -out uniref_blast.tsv -evalue 1e-5 -num_threads 4
+blastp -query no_hit_org_blast.fasta -db UniRef90_db/UniRef90_db  -out uniref_blast.tsv -evalue 1e-5 -num_threads 4 -outfmt "6 qseqid sseqid pident length qstart qend sstart send evalue bitscore"
 
 
 
