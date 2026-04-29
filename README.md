@@ -9,7 +9,7 @@ conda activate slime
 ## 1. Translating the genome in all six reading frames
 Translate the genome in all reading frames. The default length cutoff is 60 if not specified.
 ``` bash
-python translation.py test_genome.fasta all_translations.txt
+python translation.py test_genome.fasta all_translations.txt length_cutoff
 ```
 ## 2. Make an proteome databases
 Note: Download the proteome in FASTA format. 
