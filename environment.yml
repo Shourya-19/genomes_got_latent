@@ -1,4 +1,4 @@
-name: slime
+name: genomes_got_latent
 channels:
   - bioconda
   - salilab
@@ -69,4 +69,5 @@ dependencies:
   - wget=1.25.0
   - zlib=1.3.2
   - zstd=1.5.7
-prefix: /home/shourya/anaconda3/envs/slime
+prefix: /home/shourya/anaconda3/envs/genomes_got_latent
+
