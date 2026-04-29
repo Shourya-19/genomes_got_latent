@@ -1,3 +1,17 @@
+# Written by Shourya Burnwal shouryaburnwal19@gmail.com
+
+'''
+Copyright (C) 2026 Shourya Burnwal <shouryaburnwal19@gmail.com>
+
+You can use the contents of this file under the conditions of Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International deed (https://creativecommons.org/licenses/by-nc-sa/4.0/). 
+A copy of this deed in provided in the LICENSE.md file.
+
+You are free to copy, distribute, remix, transform and build upon this program as long as 1) it is for non commercial purpose, 2) Attributions are provided 3) Shared under the same license. 
+
+'''
+<a href="https://github.com/Shourya-19/genomes_got_latent">Genomes' got latent</a> © 2026 by <a href="https://github.com/Shourya-19/genomes_got_latent">Shourya Burnwal</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+
+
 """
 BLAST Results Enricher
 ======================
