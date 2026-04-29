@@ -9,7 +9,6 @@ A copy of this deed in provided in the LICENSE.md file.
 You are free to copy, distribute, remix, transform and build upon this program as long as 1) it is for non commercial purpose, 2) Attributions are provided 3) Shared under the same license. 
 
 '''
-
 """
 BLAST Results Enricher
 ======================
