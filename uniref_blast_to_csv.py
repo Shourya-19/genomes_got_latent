@@ -1,19 +1,20 @@
 """
 BLAST Results Enricher
 ======================
-Reads a BLAST tabular output file (-outfmt 6) and a translated FASTA file,
-then produces a CSV with the original BLAST columns plus:
+Reads a BLAST tabular output file (-outfmt 6), a translated FASTA file,
+and a UniRef proteome FASTA file, then produces a CSV with the original
+BLAST columns plus:
   - sequence  : full amino acid sequence of the query ORF
   - entropy   : Shannon entropy (–Σ p·log2(p)) over amino acid frequencies
   - acc_id    : UniRef accession (e.g. Q63036)
-  - function  : protein description from sseqid
+  - function  : protein description from the UniRef header
   - genus     : genus name parsed from Tax= field
   - species   : species epithet parsed from Tax= field
 
 Rows matching the user-supplied genus are excluded from the output.
 
 Usage:
-    python blast_to_csv.py <blast.tsv> <translations.fasta> <output.csv> [exclude_genus]
+    python blast_to_csv.py <blast.tsv> <translations.fasta> <uniref.fasta> <output.csv> [exclude_genus]
 """
 
 import sys
@@ -81,6 +82,30 @@ def shannon_entropy(sequence):
     return round(entropy, 4)
 
 
+def read_uniref_headers(filepath):
+    """
+    Scan a UniRef FASTA file and return a dict mapping the short ID
+    (e.g. 'UniRef50_Q63036') to the full header line (without '>').
+
+    Only headers are read — sequences are skipped — so this is fast
+    even for very large proteome files.
+    """
+    id_to_header = {}
+    print(f"Reading UniRef headers: {filepath}")
+
+    with open(filepath, 'r') as fh:
+        for line in fh:
+            if not line.startswith('>'):
+                continue
+            header = line[1:].strip()
+            short_id = header.split()[0]   # e.g. 'UniRef50_Q63036'
+            id_to_header[short_id] = header
+
+    print(f"  Loaded {len(id_to_header)} UniRef entries")
+    return id_to_header
+
+
+
 def parse_sseqid(sseqid):
     """
     Parse a UniRef sseqid string into its components.
@@ -98,22 +123,20 @@ def parse_sseqid(sseqid):
     first_token = sseqid.split()[0]             # 'UniRef50_Q63036'
     result["acc_id"] = first_token.rsplit('_', 1)[-1]
 
-    # function – text between first space and ' n=' (or ' Tax=')
     rest = sseqid[len(first_token):].strip()    # 'Rat albumin (Fragment) n=1 Tax=...'
+
+    # function – text before the first metadata tag
+    func_end = len(rest)
     for marker in (' n=', ' Tax=', ' TaxID=', ' RepID='):
         idx = rest.find(marker)
-        if idx != -1:
-            result["function"] = rest[:idx].strip()
-            rest = rest[idx:]
-            break
-    else:
-        result["function"] = rest.strip()
+        if idx != -1 and idx < func_end:
+            func_end = idx
+    result["function"] = rest[:func_end].strip()
 
     # genus + species – from 'Tax=Rattus norvegicus'
-    tax_marker = 'Tax='
-    tax_idx = rest.find(tax_marker)
+    tax_idx = rest.find('Tax=')
     if tax_idx != -1:
-        tax_str = rest[tax_idx + len(tax_marker):]
+        tax_str = rest[tax_idx + len('Tax='):]
         # stop at the next tag (TaxID=, RepID=, etc.)
         for stop in (' TaxID=', ' RepID=', ' n='):
             stop_idx = tax_str.find(stop)
@@ -128,7 +151,7 @@ def parse_sseqid(sseqid):
     return result
 
 
-def match_query_to_sequence (qseqid, fasta_dict):
+def match_query_to_sequence(qseqid, fasta_dict):
     """
     Find the FASTA sequence whose header matches qseqid.
     The query ID uses commas as separators (e.g. 'test_chr,F6,st...,sp...,L...')
@@ -164,34 +187,40 @@ def match_query_to_sequence (qseqid, fasta_dict):
 
 def ask_exclude_genus(args):
     """
-    Return the genus name to exclude.
-    Accepts it as optional 5th CLI argument or prompts interactively.
-    Returns an empty string if the user skips.
+    Return a set of genus names to exclude (lowercase for case-insensitive comparison).
+    Accepts a comma-separated list as optional 6th+ CLI argument or prompts interactively.
+    Returns an empty set if the user skips.
     """
-    if len(args) >= 5:
-        return args[4].strip()
+    if len(args) >= 6:
+        raw = args[5].strip()
+    else:
+        raw = input(
+            "Enter genus name(s) to exclude (comma-separated, e.g. Rattus,Homo) "
+            "[press Enter to keep all genera]: "
+        ).strip()
 
-    raw = input(
-        "Enter the Genus name to exclude from results "
-        "(press Enter to keep all genera): "
-    ).strip()
-    return raw
+    if not raw:
+        return set()
+
+    genera = {g.strip().lower() for g in raw.split(',') if g.strip()}
+    return genera
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
-    if len(sys.argv) < 4:
-        print("Usage: python blast_to_csv.py <blast.tsv> <translations.fasta> <output.csv> [exclude_genus]")
+    if len(sys.argv) < 5:
+        print("Usage: python blast_to_csv.py <blast.tsv> <translations.fasta> <uniref.fasta> <output.csv> [exclude_genus]")
         sys.exit(1)
 
     blast_file        = sys.argv[1]
     translations_file = sys.argv[2]
-    output_file       = sys.argv[3]
+    uniref_file       = sys.argv[3]
+    output_file       = sys.argv[4]
 
     exclude_genus = ask_exclude_genus(sys.argv)
     if exclude_genus:
-        print(f"  Excluding genus            : {exclude_genus}")
+        print(f"  Excluding genera           : {', '.join(sorted(exclude_genus))}")
     else:
         print("  No genus exclusion applied.")
 
@@ -199,6 +228,9 @@ def main():
     print(f"Reading translations: {translations_file}")
     fasta_dict = read_fasta(translations_file)
     print(f"  Loaded {len(fasta_dict)} sequences")
+
+    # ── Load UniRef headers ──
+    uniref_headers = read_uniref_headers(uniref_file)
 
     MIN_ENTROPY = 3.4
 
@@ -253,15 +285,19 @@ def main():
         for row in best_rows:
             qseqid = row["qseqid"]
 
+            # ── Look up full UniRef header for this sseqid ──
+            short_id = row["sseqid"].strip()
+            full_header = uniref_headers.get(short_id, short_id)  # fallback to raw id if not found
+
             # ── Parse sseqid ──
-            parsed = parse_sseqid(row["sseqid"])
+            parsed = parse_sseqid(full_header)
             row["acc_id"]   = parsed["acc_id"]
             row["function"] = parsed["function"]
             row["genus"]    = parsed["genus"]
             row["species"]  = parsed["species"]
 
             # ── Genus filter ──
-            if exclude_genus and parsed["genus"].lower() == exclude_genus.lower():
+            if exclude_genus and parsed["genus"].lower() in exclude_genus:
                 rows_genus_hit += 1
                 continue
 
@@ -285,7 +321,7 @@ def main():
             writer.writerow(row)
 
     # ── Summary ──
-    print(f"  Removed (genus={exclude_genus or 'none'}): {rows_genus_hit}")
+    print(f"  Removed (genus filter)     : {rows_genus_hit}")
     print(f"  Removed (low entropy < {MIN_ENTROPY}) : {rows_low_ent}")
     print(f"  Sequences not found        : {rows_no_seq}")
     print(f"  Rows written to CSV        : {rows_written + rows_no_seq}")
