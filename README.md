@@ -40,5 +40,5 @@ blastp -query no_hit_org_blast.fasta -db UniRef90_db/UniRef90_db  -out uniref_bl
 ## 6. Analyse and shortlist putative latent proteins
 The user has to give a) the blast out file from step 5, b) the translation file from step 1, c) the output file name and d) their organisms' genus.
 ```
-python analyse_uniref_hits.py uniref_blast.tsv all_translations.txt uniref_proteome_file.fasta latent_proteins.txt [exclude_genus,separate by comma]
+python uniref_blast_to_csv.py uniref_blast.tsv all_translations.txt uniref_proteome_file.fasta latent_proteins.txt [exclude_genus,separate by comma]
 ```
