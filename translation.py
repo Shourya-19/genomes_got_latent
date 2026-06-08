@@ -129,8 +129,8 @@ def translate_frame(sequence, frame_offset, frame_number, seq_header, output_fh,
                 orf_len = len(aa_seq)
                 if orf_len >= min_length:
                     header = (
-                        f">{seq_header} | F{frame_number} | "
-                        f"st {orf_start} sp {stop_pos} L {orf_len}"
+                        f">{seq_header}|F{frame_number}|"
+                        f"st{orf_start}sp{stop_pos}L{orf_len}"
                     )
                     output_fh.write(f"\n{header}\n{aa_seq}*\n")
                     count += 1
@@ -155,8 +155,8 @@ def translate_frame(sequence, frame_offset, frame_number, seq_header, output_fh,
         stop_pos = i if not is_reverse else seq_len - i + 1
         orf_len = len(aa_seq)
         header = (
-            f">{seq_header} | F{frame_number} | "
-            f"st {orf_start} sp {stop_pos} L {orf_len} (no stop codon)"
+            f">{seq_header}|F{frame_number}|"
+            f"st{orf_start}sp{stop_pos}L{orf_len}(no stop codon)"
         )
         output_fh.write(f"\n{header}\n{aa_seq}\n")
         count += 1
