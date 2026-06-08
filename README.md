@@ -8,6 +8,7 @@ conda activate genomes_got_latent
 ```
 ## 1. Translating the genome in all six reading frames
 Translate the genome in all reading frames. The default length cutoff is 60 if not specified.
+Ensure that fasta headers only contain single words without spaces like ">chrX"
 ``` bash
 python translation.py test_genome.fasta all_translations.txt length_cutoff
 ```
