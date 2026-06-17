@@ -1,4 +1,4 @@
-# Genomes' Got Latent
+# Genomes Got Latent
 Pipeline to analyse any genome and predict latent sequences
 ## Download and setup the repository
 ```
